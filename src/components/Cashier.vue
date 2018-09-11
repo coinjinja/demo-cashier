@@ -48,7 +48,7 @@ export default {
     return {
       orders: [],
       price: 100,
-      symbol: 'ETH',
+      symbol: 'ECO',
       product_name: 'ミネラルウォーター 500ml'
     }
   },
@@ -96,16 +96,16 @@ export default {
   width: 80px;
 }
 .header-desc {
-  width: auto;
   text-align: right;
+  flex: 1;
 }
 .header-desc h1 {
   font-size: 16px;
   font-weight: 600;
-  margin: 5px;
+  margin: 10px 0 0;
 }
 .header-desc div {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 600;
 }
 .header-desc div span {
