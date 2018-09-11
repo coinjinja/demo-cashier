@@ -63,11 +63,23 @@ export default {
       if (d.type !== 'transfer') return
       if (d.asset.symbol !== this.symbol) return
       this.orders.splice(0, 0, d)
+      console.log('add', this.orders)
     },
   },
   filters: { numberFormat },
   mounted() {
-    this.$options.sockets.onmessage = (data) => this.add(JSON.parse(data.data))
+    this.$options.sockets.onmessage = (data) => {
+      try {
+        const json = JSON.parse(data.data)
+        const { asset_id, memo } = json
+        if (asset_id !== '3d356f2b-a886-3693-bd2b-04c447ce2399' || memo !== 'CASHIER_DEMO_ECO_100') {
+          return
+        }
+        this.add(json)
+      } catch {
+        return
+      }
+    }
   },
   destroyed() {
     delete this.$options.sockets.onmessage

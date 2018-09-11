@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@coinjinja/coinview-sdk": "^1.0.1-dev",
     "timeago.js": "^3.0.2",
     "vue": "^2.5.17",
     "vue-native-websocket": "^2.0.9"
