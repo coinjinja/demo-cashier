@@ -202,11 +202,8 @@ export default {
 .history-row {
   transition: all 0.5s;
 }
-.history-row-enter, .history-row-leave-to {
+.history-row-enter {
   opacity: 0;
   transform: translateX(-50%);
-}
-.history-row-leave-active {
-  position: absolute;
 }
 </style>
