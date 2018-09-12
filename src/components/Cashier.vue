@@ -76,7 +76,7 @@ export default {
           return
         }
         this.add(json)
-      } catch {
+      } catch (error) {
         return
       }
     }
