@@ -22,3 +22,9 @@ export function numberFormat(num, fixed) {
   }
   return prefix
 }
+
+export function getProduct() {
+  const urlStr = window.location.href
+  const url = new URL(urlStr)
+  return url.searchParams.get('product')
+}

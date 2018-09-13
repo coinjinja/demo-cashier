@@ -2,11 +2,11 @@
   <div class="cashier">
     <div class="header">
       <div class="header-image">
-        <img alt="Mineral Water" width="80" height="80" src="../assets/volvic.jpg">
+        <img alt="Mineral Water" width="80" height="80" :src="product.image">
       </div>
       <div class="header-desc">
-        <h1>{{product_name}}</h1>
-        <div>{{price}}<span>{{symbol}}</span></div>
+        <h1>{{product.product_name}}</h1>
+        <div>{{product.price}}<span>{{product.symbol}}</span></div>
       </div>
       <div class="header-button">
         <button><img src="../assets/qr.svg" class="QR"> お支払いQRコード</button>
@@ -14,12 +14,12 @@
     </div>
     <div class="counter">
       <div>
-        <h3>{{orders.length}}</h3>
+        <h3>{{totalAmount}}</h3>
         <span>販売本数</span>
       </div>
       <div>
-        <h3>{{sum | numberFormat}}</h3>
-        <span>販売額 ({{symbol}})</span>
+        <h3>{{totalSales | numberFormat}}</h3>
+        <span>販売額 ({{product.symbol}})</span>
       </div>
     </div>
     <div class="history">
@@ -40,21 +40,50 @@
 </template>
 
 <script>
-import { numberFormat } from '../utils'
+import { numberFormat, getProduct } from '../utils'
+import api from '../utils/api'
 
 export default {
   name: 'Cashier',
   data() {
     return {
+      amount: 0,
+      sales: 0,
       orders: [],
-      price: 100,
-      symbol: 'ECO',
-      product_name: 'ミネラルウォーター 500ml'
+      products: {
+        water: {
+          price: 60,
+          symbol: 'ECO',
+          product_name: 'ミネラルウォーター 500ml',
+          image: require('../assets/volvic.jpg'),
+        },
+        souvenir: {
+          price: 20,
+          symbol: 'ECO',
+          product_name: 'ノベルティ',
+          image: require('../assets/badge.jpg'),
+        }
+      }
     }
   },
   computed: {
     sum() {
       return this.orders.reduce((p, v) => p + parseFloat(v.amount, 10), 0)
+    },
+    product() {
+      return this.products[getProduct()]
+    },
+    totalAmount() {
+      if (this.amount > this.orders.length) {
+        return this.amount
+      }
+      return this.orders.length
+    },
+    totalSales() {
+      if (this.sales > this.sum) {
+        return this.sales
+      }
+      return this.sum
     }
   },
   methods: {
@@ -65,6 +94,17 @@ export default {
       this.orders.splice(0, 0, d)
       console.log('add', this.orders)
     },
+    async fetchSalesVolume() {
+      try {
+        const data = await api.fetchSalesVolume()
+        const { amount, sales } = data.data
+        this.amount = amount
+        this.sales = sales
+      } catch (err) {
+        console.log(err)
+        return
+      }
+    },
   },
   filters: { numberFormat },
   mounted() {
@@ -72,7 +112,7 @@ export default {
       try {
         const json = JSON.parse(data.data)
         const { asset_id, memo } = json
-        if (asset_id !== '3d356f2b-a886-3693-bd2b-04c447ce2399' || memo !== 'CASHIER_DEMO_ECO_100') {
+        if (asset_id !== '3d356f2b-a886-3693-bd2b-04c447ce2399' || memo !== `CASHIER_DEMO_${this.product}`) {
           return
         }
         this.add(json)
@@ -80,6 +120,8 @@ export default {
         return
       }
     }
+    this.fetchSalesVolume()
+    setInterval(() => this.fetchSalesVolume(), 3000)
   },
   destroyed() {
     delete this.$options.sockets.onmessage

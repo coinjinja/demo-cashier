@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import coinview from '@coinjinja/coinview-sdk'
 
+import { getProduct } from './utils'
+
 import App from './App.vue'
 
 Vue.config.productionTip = false
@@ -17,4 +19,9 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-coinview.init('R4Pa3Ev1').then(() => console.log('Coinview sdk inited.'))
+const product = getProduct()
+if (product === 'water') {
+  coinview.init('R4Pa3Ev1').then(() => console.log('Coinview sdk inited.'))
+} else if (product === 'souvenir') {
+  coinview.init('ZAqjdD4X').then(() => console.log('Coinview sdk inited.'))
+}
