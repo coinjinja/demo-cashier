@@ -11,7 +11,7 @@ import mixins from './mixins'
 Vue.use(mixins)
 
 import VueNativeSock from 'vue-native-websocket'
-Vue.use(VueNativeSock, 'wss://push.coinjinja.com/sub/direct_transfer?user_id=f1431814-716f-34a9-8b71-eb59c21f8d74', {
+Vue.use(VueNativeSock, 'wss://push.coinjinja.com/sub/direct_transfer?user_id=48ae0f19-2574-344a-9109-5f07004bf411', {
   reconnection: true,
 })
 
