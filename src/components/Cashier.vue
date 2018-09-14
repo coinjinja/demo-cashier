@@ -89,15 +89,16 @@ export default {
   methods: {
     add(data) {
       const d = data.data
-      if (d.type !== 'transfer') return
-      if (d.asset.symbol !== this.symbol) return
       this.orders.splice(0, 0, d)
-      console.log('add', this.orders)
     },
     async fetchSalesVolume() {
       try {
         const data = await api.fetchSalesVolume()
         const { amount, sales } = data.data
+          .filter(e => e.product === `CASHIER_DEMO_${getProduct().toUpperCase()}`)[0] || {}
+        if (!amount || !sales) {
+          return
+        }
         this.amount = amount
         this.sales = sales
       } catch (err) {
@@ -111,12 +112,16 @@ export default {
     this.$options.sockets.onmessage = (data) => {
       try {
         const json = JSON.parse(data.data)
-        const { asset_id, memo } = json
-        if (asset_id !== '3d356f2b-a886-3693-bd2b-04c447ce2399' || memo !== `CASHIER_DEMO_${this.product}`) {
+        const { asset_id, memo } = json.data
+        if (
+          asset_id !== '3d356f2b-a886-3693-bd2b-04c447ce2399' ||
+          memo !== `CASHIER_DEMO_${getProduct().toUpperCase()}`
+        ) {
           return
         }
         this.add(json)
       } catch (error) {
+        console.log(error)
         return
       }
     }
